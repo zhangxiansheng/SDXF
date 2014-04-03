@@ -257,8 +257,8 @@ class Line(_Entity):
 
 
 class LwPolyLine(_Entity):
-    """This is a LWPOLYLINE. I have no idea how it differs from a normal
-    PolyLine"""
+    """This is a LWPOLYLINE. It's no work. 
+        So I add the class of PolyLine, so LwPolyLine-->PolyLine"""
 
     def __init__(self, points, flag=0, width=None, **common):
         _Entity.__init__(self, **common)
@@ -277,7 +277,8 @@ class LwPolyLine(_Entity):
 
 
 class PolyLine(_Entity):
-    # TODO: Finish polyline (now implemented as a series of lines)
+    """Polyline"""
+    
     def __init__(self, points, flag=0, width=None, **common):
         _Entity.__init__(self, **common)
         self.points = points
@@ -285,11 +286,12 @@ class PolyLine(_Entity):
         self.width = width
 
     def __str__(self):
-        result = '0\nPOLYLINE\n%s\n70\n%s' % (self._common(), self.flag)
+        result = '0\nPOLYLINE\n%s\n66\n1\n70\n%s\n' % (self._common(), self.flag)
+        result += '%s' % _point((0.0, 0.0, 0.0))
         for point in self.points:
-            result += '\n0\nVERTEX\n%s' % _point(point)
-            if self.width:
-                result += '\n40\n%s\n41\n%s' % (self.width, self.width)
+            result += '\n0\nVERTEX\n8\n%s\n%s' % (self.layer, _point(point))
+        if self.width:
+            result += '\n40\n%s\n41\n%s' % (self.width, self.width)
         result += '\n0\nSEQEND'
         return result
 
@@ -664,7 +666,9 @@ class LineList(_Entity):
                     parent=self)
         return result[1:]
 
-PolyLine = LineList
+#PolyLine = LineList
+LwPolyLine = PolyLine
+#mended the PolyLine
 
 #---test
 
@@ -699,9 +703,9 @@ def main():
     d.append(Solid(points=[(4, 4, 0), (5, 4, 0), (7, 8, 0), (9, 9, 0)],
             color=3))
     d.append(PolyLine(points=[(1, 1, 1), (2, 1, 1), (2, 2, 1), (1, 2, 1)],
-            closed=1, color=1))
+            flag=1, color=1))
     
-    d.saveas('c:\\test.dxf')
+    d.saveas('test.dxf')
 
 if __name__ == '__main__':
     main()
